@@ -145,14 +145,6 @@ const DUMMY_VIDEOS = [
   },
 ];
 
-function formatNaira(amount) {
-  return new Intl.NumberFormat("en-NG", {
-    style: "currency",
-    currency: "NGN",
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
 // Deterministic navy/gold assignment per course code, echoing the
 // scattered-pill treatment from the auth screens for visual consistency.
 function codeStyle(courseCode) {

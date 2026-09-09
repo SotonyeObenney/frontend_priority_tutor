@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { apiFetch } from "../api";
 import { useLoaderData, useActionData, redirect } from "react-router-dom";
+import { useEffect } from "react";
 // import axios from "axios";
 export async function loginLoader() {
   return apiFetch("auth/register", { method: "GET" });
@@ -75,7 +76,25 @@ export default function AuthPage() {
   const [tab, setTab] = useState("login");
   const loaderData = useLoaderData();
 
-  const UNIVERSITIES = loaderData.universities;
+  const [universities, setUniversities] = useState([]);
+  const [universitiesLoading, setUniversitiesLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadUniversities() {
+      try {
+        const data = await apiFetch("auth/register", { method: "GET" });
+        setUniversities(data.universities);
+        console(universities);
+      } catch (err) {
+        console.error("Failed to load universities", err);
+      } finally {
+        setUniversitiesLoading(false);
+      }
+      return apiFetch("auth/register", { method: "GET" });
+    }
+    loadUniversities();
+  }, []);
+
   //we declared register Forms and login forms as use states
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
@@ -252,9 +271,11 @@ export default function AuthPage() {
                 }
               >
                 <option value="" disabled>
-                  Select your university
+                  {universitiesLoading
+                    ? "Loading..."
+                    : "Select your university"}
                 </option>
-                {UNIVERSITIES.map((u) => (
+                {universities.map((u) => (
                   <option key={u.university_id} value={u.university_id}>
                     {u.university_name}
                   </option>

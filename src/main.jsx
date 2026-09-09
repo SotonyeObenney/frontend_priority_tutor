@@ -9,7 +9,7 @@ import {
 
 import "./index.css";
 import HomePage from "./Pages/HomePage.jsx";
-import AuthPage, { loginLoader } from "./Pages/AuthPage.jsx"; // Imported loginLoader
+import AuthPage from "./Pages/AuthPage.jsx"; // Imported loginLoader
 import AdminPage from "./Pages/AdminPage.jsx";
 import TutorsPage from "./Pages/TutorsPage.jsx";
 import VideosPage from "./Pages/VideosPage.jsx";
@@ -24,7 +24,7 @@ const router = createBrowserRouter(
     <>
       <Route index element={<HomePage />} />
 
-      <Route path="auth/login" loader={loginLoader} element={<AuthPage />} />
+      <Route path="auth/login" element={<AuthPage />} />
       <Route path="auth/register" element={<AuthPage />} />
 
       <Route path="tutors/:tutorUserId" element={<TutorsPage />} />
