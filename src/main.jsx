@@ -18,6 +18,9 @@ import UserProfilePage from "./Pages/UserProfilePage.jsx";
 import UploadVideoPage from "./Pages/UploadVideoPage.jsx";
 import TutorDashboardPage from "./Pages/TutorDashboardPage.jsx";
 import TutorApplyPage from "./Pages/TutorApplyPage.jsx";
+import { AuthProvider } from "./context/AuthContext.jsx";
+import NotFoundPage from "./Pages/NotFoundPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,11 +34,19 @@ const router = createBrowserRouter(
       <Route path="tutors/apply" element={<TutorApplyPage />} />
       <Route path="tutors/dashboard" element={<TutorDashboardPage />} />
 
-      <Route path="videos" element={<VideosPage />} />
+      <Route
+        path="videos"
+        element={
+          <ProtectedRoute>
+            <VideosPage />
+          </ProtectedRoute>
+        }
+      />
       <Route path="videos/show_video/:videoId" element={<VideoPage />} />
       <Route path="videos/upload" element={<UploadVideoPage />} />
 
       <Route path="users/profile" element={<UserProfilePage />} />
+      <Route errorElement={<NotFoundPage />} />
 
       <Route path="admin/application" element={<AdminPage />} />
     </>,
@@ -44,6 +55,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 );

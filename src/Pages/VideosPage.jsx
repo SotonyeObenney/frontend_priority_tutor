@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import VideoCard from "../components/VideoCard";
+import { useAuth } from "../context/AuthContext";
 
 // Brand tokens — move these into tailwind.config.js as named colors
 // (navy, gold, cream) once this lives in the real Vite project.

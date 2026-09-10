@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import { apiFetch } from "../api";
 import { useLoaderData, useActionData, redirect } from "react-router-dom";
-import { useEffect } from "react";
+import { AuthProvider, useAuth } from "../context/AuthContext";
+
 // import axios from "axios";
 export async function loginLoader() {
   return apiFetch("auth/register", { method: "GET" });
@@ -74,7 +75,6 @@ const inputClass =
 
 export default function AuthPage() {
   const [tab, setTab] = useState("login");
-  const loaderData = useLoaderData();
 
   const [universities, setUniversities] = useState([]);
   const [universitiesLoading, setUniversitiesLoading] = useState(true);

@@ -1,5 +1,5 @@
 const TutorApplyPage = () => {
-  return <div>TutorApplyPage</div>;
+  return <div className="bg-navy">TutorApplyPage</div>;
 };
 
 export default TutorApplyPage;
