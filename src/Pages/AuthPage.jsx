@@ -1,7 +1,9 @@
 import { useState, useEffect, useContext } from "react";
 import { apiFetch } from "../api";
-import { useLoaderData, useActionData, redirect } from "react-router-dom";
+import { redirect } from "react-router-dom";
 import { AuthProvider, useAuth } from "../context/AuthContext";
+import { useNavigate, useLocation } from "react-router-dom";
+import ErrorBanner from "../components/ErrorBanner";
 
 // import axios from "axios";
 export async function loginLoader() {
@@ -74,26 +76,44 @@ const inputClass =
   "w-full h-9 border border-gray-300 rounded-lg px-3 text-sm focus:outline-none focus:ring-2";
 
 export default function AuthPage() {
+  const { login, register } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const [tab, setTab] = useState("login");
 
   const [universities, setUniversities] = useState([]);
+
+  const [error, setError] = useState();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [universitiesLoading, setUniversitiesLoading] = useState(true);
+  const from = location.state?.from?.pathname || "/videos";
 
   useEffect(() => {
     async function loadUniversities() {
       try {
         const data = await apiFetch("auth/register", { method: "GET" });
         setUniversities(data.universities);
-        console(universities);
+        return data;
       } catch (err) {
         console.error("Failed to load universities", err);
       } finally {
         setUniversitiesLoading(false);
       }
-      return apiFetch("auth/register", { method: "GET" });
     }
     loadUniversities();
   }, []);
+
+  //Error handling useEffect
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [error, error]);
 
   //we declared register Forms and login forms as use states
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -113,20 +133,39 @@ export default function AuthPage() {
     e.preventDefault();
     // Wire up with apiFetch("auth/login", { method: "POST", body: loginForm })
     // once the visual shell is approved.
-    console.log("login submit", loginForm);
-    console.log(apiFetch("/auth/login", { method: "POST", body: loginForm }));
+    setIsSubmitting(true);
+    const result = await login(loginForm);
+    if (result.success) {
+      navigate(from, { replace: true });
+    } else {
+      setError(result.message);
+      console.error(error);
+    }
+    setIsSubmitting(false);
   }
 
   async function handleRegisterSubmit(e) {
     e.preventDefault();
     // Wire up with apiFetch("auth/register", { method: "POST", body: registerForm })
     // once the visual shell is approved.
-    console.log("register submit", registerForm);
-    const info = await apiFetch("/auth/register", {
-      method: "POST",
-      body: registerForm,
-    });
-    console.log(info);
+    setIsSubmitting(true);
+    const result = await register(registerForm);
+    if (result.success) {
+      setIsSubmitting(true); //This would display a spinner
+
+      const data = await login({
+        email: registerForm.email,
+        password: registerForm.password,
+      });
+      if (data.success) {
+        setIsSubmitting(false);
+        navigate(from, { replace: true });
+      }
+    } else {
+      setError(result.message);
+    }
+    setIsSubmitting(false);
+    // Fix this by creating a separate register Function
   }
 
   return (
@@ -176,9 +215,11 @@ export default function AuthPage() {
             Register
           </button>
         </div>
-
+        {/* There has to be a way to auto login the user after creating the account kinda using the login and passing the user data as the payload */}
         {tab === "login" ? (
           <form onSubmit={handleLoginSubmit}>
+            {error && <ErrorBanner errorType={"Login"} errorMessage={error} />}
+
             <Field label="Email">
               <input
                 type="email"
@@ -208,7 +249,7 @@ export default function AuthPage() {
                 className="text-xs font-medium"
                 style={{ color: COLORS.gold }}
               >
-                Forgot password?
+                Forgot password? Not working!
               </a>
             </p>
 
@@ -217,7 +258,7 @@ export default function AuthPage() {
               className="w-full h-10 rounded-lg text-sm font-medium"
               style={{ background: COLORS.navy, color: COLORS.cream }}
             >
-              Sign in
+              Log in
             </button>
 
             <p className="text-sm text-gray-500 text-center mt-4">
@@ -228,14 +269,18 @@ export default function AuthPage() {
                 className="font-medium"
                 style={{ color: COLORS.gold }}
               >
-                Register for free
+                Register now
               </button>
             </p>
           </form>
         ) : (
           <form onSubmit={handleRegisterSubmit}>
+            {error && (
+              <ErrorBanner errorType={"Register"} errorMessage={error} />
+            )}
             <Field label="Full name">
               <input
+                required
                 type="text"
                 placeholder="Chidinma Okafor"
                 className={inputClass}
@@ -250,6 +295,7 @@ export default function AuthPage() {
             </Field>
             <Field label="Email">
               <input
+                required
                 type="email"
                 placeholder="name@university.edu.ng"
                 className={inputClass}
@@ -261,6 +307,7 @@ export default function AuthPage() {
             </Field>
             <Field label="University">
               <select
+                required
                 className={inputClass}
                 value={registerForm.university_id}
                 onChange={(e) =>
@@ -286,6 +333,7 @@ export default function AuthPage() {
             <div className="grid grid-cols-2 gap-3">
               <Field label="Faculty">
                 <select
+                  required
                   className={inputClass}
                   value={registerForm.faculty}
                   onChange={(e) =>
@@ -307,6 +355,7 @@ export default function AuthPage() {
               </Field>
               <Field label="Department">
                 <select
+                  required
                   className={inputClass}
                   value={registerForm.department}
                   onChange={(e) =>
@@ -330,6 +379,7 @@ export default function AuthPage() {
 
             <Field label="Level">
               <select
+                required
                 className={inputClass}
                 value={registerForm.level}
                 onChange={(e) =>
