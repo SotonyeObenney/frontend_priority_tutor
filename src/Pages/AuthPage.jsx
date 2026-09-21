@@ -3,7 +3,7 @@ import { apiFetch } from "../api";
 import { redirect } from "react-router-dom";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import ErrorBanner from "../components/ErrorBanner";
+import StatusBanner from "../components/StautsBanner";
 
 // import axios from "axios";
 export async function loginLoader() {
@@ -218,7 +218,7 @@ export default function AuthPage() {
         {/* There has to be a way to auto login the user after creating the account kinda using the login and passing the user data as the payload */}
         {tab === "login" ? (
           <form onSubmit={handleLoginSubmit}>
-            {error && <ErrorBanner errorType={"Login"} errorMessage={error} />}
+            {error && <StatusBanner errorType={"Login"} errorMessage={error} />}
 
             <Field label="Email">
               <input
@@ -276,7 +276,7 @@ export default function AuthPage() {
         ) : (
           <form onSubmit={handleRegisterSubmit}>
             {error && (
-              <ErrorBanner errorType={"Register"} errorMessage={error} />
+              <StatusBanner errorType={"Register"} errorMessage={error} />
             )}
             <Field label="Full name">
               <input

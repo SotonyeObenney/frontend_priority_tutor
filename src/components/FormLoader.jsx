@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 /**
  * FormLoader — "writing" loading state for form submissions
@@ -24,11 +25,7 @@ import { useState, useEffect } from "react";
  *  - <ButtonSpinner />     compact, drop inside a disabled submit button
  */
 
-const loadingMessages = [
-  "Submitting",
-  "Almost there",
-  "Just a moment",
-];
+const loadingMessages = ["Submitting", "Almost there", "Just a moment"];
 
 export function FormLoader({ label }) {
   const [messageIndex, setMessageIndex] = useState(0);
@@ -144,6 +141,15 @@ export function ButtonSpinner({ className = "" }) {
         />
       ))}
     </span>
+  );
+}
+
+export function PageSpinner({ message = "Loading..." }) {
+  return (
+    <div className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-3 bg-cream px-4">
+      <Loader2 className="h-8 w-8 animate-spin text-gold" />
+      <p className="text-sm font-medium text-navy">{message}</p>
+    </div>
   );
 }
 

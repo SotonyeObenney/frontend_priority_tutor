@@ -94,7 +94,7 @@ function VideoCard({ video, onSelectVideo }) {
   return (
     <button
       onClick={() => onSelectVideo(video.id)}
-      className="group w-[200px] shrink-0 snap-start overflow-hidden rounded-2xl border border-gray-200 bg-white text-left transition-shadow hover:shadow-md sm:w-[220px]"
+      className="group w-50 shrink-0 snap-start overflow-hidden rounded-2xl border border-gray-200 bg-white text-left transition-shadow hover:shadow-md sm:w-[220px]"
     >
       {/* "thumbnail" — course code as the visual, per design system */}
       <div
@@ -176,7 +176,7 @@ function Shelf({ title, videos, onSelectVideo, id }) {
       </div>
       <div
         ref={scrollRef}
-        className="flex snap-x gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] scrollbar-none [&::-webkit-scrollbar]:hidden"
       >
         {videos.map((v) => (
           <VideoCard key={v.id} video={v} onSelectVideo={onSelectVideo} />

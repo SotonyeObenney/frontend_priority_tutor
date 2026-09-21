@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -25,6 +26,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import NotFoundPage from "./Pages/NotFoundPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
+import TutorOnlyRoute from "./components/TutorOnlyRoute.jsx";
 
 function RootLayout() {
   // const navigate = useNavigate();
@@ -68,7 +70,7 @@ function RootLayout() {
         }}
       />
       {/* This renders whatever specific page/route you are currently visiting */}
-      <main className="mx-auto max-w-7xl p-4">
+      <main className="w-full min-h-screen bg-cream p-4">
         <Outlet />
       </main>
     </>
@@ -84,7 +86,14 @@ const router = createBrowserRouter(
       <Route path="/" element={<RootLayout />}>
         <Route path="tutors/:tutorUserId" element={<TutorsPage />} />
         <Route path="tutors/apply" element={<TutorApplyPage />} />
-        <Route path="tutors/dashboard" element={<TutorDashboardPage />} />
+        <Route
+          path="tutors/dashboard"
+          element={
+            <TutorOnlyRoute>
+              <TutorDashboardPage />
+            </TutorOnlyRoute>
+          }
+        />
 
         <Route
           path="videos"
@@ -107,7 +116,9 @@ const router = createBrowserRouter(
           path="videos/upload"
           element={
             <ProtectedRoute>
-              <UploadVideoPage />
+              <TutorOnlyRoute>
+                <UploadVideoPage />
+              </TutorOnlyRoute>
             </ProtectedRoute>
           }
         />
@@ -120,6 +131,7 @@ const router = createBrowserRouter(
     </>,
   ),
 );
+// The browser cookies are not being cleared
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
