@@ -3,7 +3,6 @@ import { Eye, User, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { apiFetch } from "../api";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-apiFetch;
 
 /**
  * VideosPage — feed / carousel view, Ink and Sun palette
@@ -206,7 +205,6 @@ export default function VideosPage() {
   }, []);
   const handleSelectVideo = (video_id) => {
     navigate(`/videos/show_video/${video_id}`);
-    console.log(video_id);
   };
 
   const enriched = useMemo(() => videos.map(withDerivedFields), [videos]);

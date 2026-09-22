@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { CheckCircle2, XCircle, Eye, User } from "lucide-react";
+import StatusBanner from "../components/StautsBanner";
 import {
   hashCode,
   parseCourseCode,
   formatNaira,
   extractYouTubeId,
 } from "../components/videoUtils";
-
+import { apiFetch } from "../api";
+import { useEffect } from "react";
 /**
  * UploadVideoPage — tutor-side video upload form with a live preview.
  * ------------------------------------------------------------
@@ -79,16 +81,41 @@ function FeedCardPreview({ title, courseCode, tutorName, price, isFree }) {
 
 export default function UploadVideoPage({
   tutorName = "",
-  onSubmit = () => {},
   onCancel = () => {},
 }) {
+  const PATH = "/videos/upload";
+
   const [title, setTitle] = useState("");
+  const [alert, setAlert] = useState("");
+  const [error, setError] = useState("");
   const [courseCode, setCourseCode] = useState("");
   const [description, setDescription] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [price, setPrice] = useState("");
   const [isFree, setIsFree] = useState(false);
+  //Error and status handling useEffect
+  useEffect(() => {
+    if (error || alert) {
+      const timer = setTimeout(() => {
+        setError("");
+        setAlert("");
+      }, 5000);
 
+      return () => clearTimeout(timer);
+    }
+  }, [error, alert]);
+
+  async function onSubmit(data) {
+    try {
+      const response = await apiFetch(PATH, {
+        method: "POST",
+        body: data,
+      });
+      setAlert("Video Uploaded Successfully!");
+    } catch (error) {
+      setError(error);
+    }
+  }
   const videoId = extractYouTubeId(youtubeUrl);
   const urlTouched = youtubeUrl.trim().length > 0;
 
@@ -108,13 +135,23 @@ export default function UploadVideoPage({
       description: description.trim(),
       youtube_url: youtubeUrl.trim(),
       price: isFree ? 0 : Number(price),
-      is_free: isFree ? "True" : "False", // backend expects this exact string, not a real boolean
+      is_free: isFree ? true : false,
     });
+    setTitle("");
+    setCourseCode("");
+    setDescription("");
+    setYoutubeUrl("");
+    setPrice("");
+    setIsFree("");
   };
 
   return (
     <div className="min-h-screen bg-cream px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
+        {error && (
+          <StatusBanner positive={false} errorMessage={error?.message} />
+        )}
+        {alert && <StatusBanner positive={true} successMessage={alert} />}
         <h1 className="mb-1 text-2xl font-bold tracking-tight text-navy">
           Upload a video
         </h1>
@@ -215,7 +252,7 @@ export default function UploadVideoPage({
               >
                 <span
                   className={`absolute top-0.5 h-5 w-5 rounded-full bg-white transition-transform ${
-                    isFree ? "translate-x-5" : "translate-x-0.5"
+                    isFree ? "translate-x-0.3" : "-translate-x-5"
                   }`}
                 />
               </button>

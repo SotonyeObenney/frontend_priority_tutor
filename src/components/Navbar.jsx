@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 
 import { Search, X, Menu, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+// No wonder the users Initials aren't showing look up|
 
 /**
  * Navbar — Priority Tutor, "Ink and Sun" palette
@@ -37,7 +38,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Navbar({
   isAuthenticated = {},
-  user = { user },
+  // user = { user },
   activePath = "/",
   onNavigate = () => {},
   onLogin = () => {
@@ -52,14 +53,21 @@ export default function Navbar({
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const { user } = useAuth();
 
   const navLinks = [
     { label: "Home", path: "/" },
     { label: "Videos", path: "/videos" },
+    { label: "About", path: "/about" },
   ];
 
-  const initials = user?.name
-    ? user.name
+  const variableLinks = user?.is_tutor
+    ? //Nav links if the person is a tutor
+      [{ label: "Dashboard", path: "/tutors/dashboard" }]
+    : // Navlinks if the person is not a tutor
+      [{ label: "Become a Tutor", path: "/tutors/apply" }];
+  const initials = user?.full_name
+    ? user.full_name
         .split(" ")
         .map((p) => p[0])
         .slice(0, 2)
@@ -146,6 +154,31 @@ export default function Navbar({
             className="h-10 w-full rounded-full border border-gray-300 bg-white pl-10 pr-4 text-sm text-navy placeholder:text-gray-400 outline-none transition-shadow focus:border-navy focus:ring-2 focus:ring-gold/40"
           />
         </form>
+        <div className="hidden shrink-0 items-center gap-6 md:flex">
+          {variableLinks.map((link) => {
+            const isActive = activePath === link.path;
+            return (
+              <button
+                key={link.path}
+                onClick={() => navigate(link.path)}
+                className="flex items-center gap-1.5 text-sm font-medium"
+              >
+                <span
+                  className={
+                    isActive ? "text-navy" : "text-gray-400 hover:text-gray-500"
+                  }
+                >
+                  {link.label}
+                </span>
+                <span
+                  className={`h-1.5 w-1.5 rounded-full transition-opacity ${
+                    isActive ? "bg-gold opacity-100" : "opacity-0"
+                  }`}
+                />
+              </button>
+            );
+          })}
+        </div>
 
         {/* Desktop auth actions */}
         <div className="ml-auto hidden shrink-0 items-center gap-4 md:flex">
@@ -278,31 +311,4 @@ export default function Navbar({
   );
 }
 
-/* --- Demo shell (remove — just here so the preview shows every state) --- */
-// export default function NavbarDemo() {
-//   const [authed, setAuthed] = useState(false);
-//   const [path, setPath] = useState("/");
-
-//   return (
-//     <div className="min-h-[500px] bg-cream">
-//       <Navbar
-//         isAuthenticated={authed}
-//         user={{ name: "Chidinma Okafor" }}
-//         activePath={path}
-//         onNavigate={setPath}
-//         onLogin={() => setAuthed(true)}
-//         onRegister={() => setAuthed(true)}
-//         onLogout={() => setAuthed(false)}
-//         onSearch={(q) => console.log("search:", q)}
-//       />
-//       <div className="flex justify-center pt-6">
-//         <button
-//           onClick={() => setAuthed((a) => !a)}
-//           className="rounded-full border border-gray-300 px-3 py-1.5 text-xs text-gray-500"
-//         >
-//           Toggle auth state (demo only) — resize window to test mobile
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
+// How to gate certain parts of the navbar so they don't show on people that are not logged in or I could just have a different set of navLinks

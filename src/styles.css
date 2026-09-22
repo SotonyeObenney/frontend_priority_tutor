@@ -1,27 +1,4 @@
 @import "tailwindcss";
-/* @theme {
-  --color-navy: #1b2a4a;
-  --color-gold: #c9a34e;
-  --color-cream: #fdf6d8;
-  --color-pill: #ede0a0;
-} */
-
-/* @theme {
-  --color-navy: #1b2a4a;
-  --color-gold: #ffc94d;
-  --color-cream: #fafaf7;
-  --color-pill: #f5c518;
-} */
-/* @theme {
-  --color-navy: #14213d;
-  --color-gold: #ffb627;
-  --color-cream: #fafaf7;
-  --color-pill: #ffe9b8;
-  --color-success: #2e9e5b;
-  --color-danger: #e5484d;
-} */
-
-@import "tailwindcss";
 /* @source "../src"; */
 @import "tw-animate-css";
 

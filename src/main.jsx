@@ -27,6 +27,7 @@ import NotFoundPage from "./Pages/NotFoundPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
 import TutorOnlyRoute from "./components/TutorOnlyRoute.jsx";
+import AboutPage from "./Pages/AboutPage.jsx";
 
 function RootLayout() {
   // const navigate = useNavigate();
@@ -67,6 +68,9 @@ function RootLayout() {
         onLogout={() => {
           logout();
           navigate("/auth/login");
+        }}
+        onApply={() => {
+          navigate("tutors/apply");
         }}
       />
       {/* This renders whatever specific page/route you are currently visiting */}
@@ -124,6 +128,8 @@ const router = createBrowserRouter(
         />
 
         <Route path="users/profile" element={<UserProfilePage />} />
+        <Route path="about" element={<AboutPage />} />
+
         <Route errorElement={<NotFoundPage />} />
 
         <Route path="admin/application" element={<AdminPage />} />

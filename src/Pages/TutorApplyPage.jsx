@@ -9,33 +9,6 @@ StatusBanner;
 
 // import { hashCode } from "./videoUtils";
 
-/**
- * TutorApplicationPage — apply to become a tutor, then wait for approval.
- * ------------------------------------------------------------
- * Status color mapping established here (worth keeping consistent
- * everywhere else a review/approval flow shows up):
- *   pending  -> gold-tinted banner  (in progress, needs attention/patience)
- *   approved -> success-tinted banner (confirmed good outcome)
- *   rejected -> danger-tinted banner  (confirmed bad outcome)
- * Same logic as the locked-video banner (gold = prompt/in-progress) and
- * the payment-success banner (green = confirmed) from the video pages.
- *
- * The `courses` field in your API is a single string even though it's
- * named plural — this form lets a tutor type multiple comma-separated
- * codes (much better UX than a single-course limit) and joins them back
- * into one string on submit, matching your current backend. Course pills
- * preview live as they type, reusing the same hashed navy/pale-gold
- * badge logic as course codes everywhere else in the app.
- *
- * Props:
- *   status: "none" | "pending" | "approved" | "rejected"
- *   application: { bio, courses } — the already-submitted values, if any
- *   rejectionReason?: string
- *   onSubmit: ({ bio, courses }) => void   // courses is the joined string
- *   onGoToUpload: () => void               // approved state CTA
- *   onReapply: () => void                  // rejected state CTA
- */
-
 const PATH = "tutors/apply";
 
 function CoursePill({ code }) {
@@ -67,6 +40,9 @@ export default function TutorApplyPage({ application }) {
         method: "POST",
         body: data,
       });
+      setAlert("Application submitted");
+      setCoursesInput("");
+      setBio("");
     } catch (error) {
       setError(error);
     }
@@ -74,20 +50,22 @@ export default function TutorApplyPage({ application }) {
   const [bio, setBio] = useState(application?.bio ?? "");
   const [error, setError] = useState();
   const [coursesInput, setCoursesInput] = useState(application?.courses ?? "");
+  const [alert, setAlert] = useState("");
 
   const parsedCourses = parseCourses(coursesInput);
   const canSubmit = bio.trim().length >= 10 && parsedCourses.length > 0;
 
   //Error handling useEffect
   useEffect(() => {
-    if (error) {
+    if (error || alert) {
       const timer = setTimeout(() => {
         setError("");
+        setAlert("");
       }, 5000);
 
       return () => clearTimeout(timer);
     }
-  }, [error]);
+  }, [error, alert]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -105,6 +83,7 @@ export default function TutorApplyPage({ application }) {
             errorMessage={error?.message}
           />
         )}
+        {alert && <StatusBanner positive={true} successMessage={alert} />}
 
         <h1 className="mb-1 text-2xl font-bold tracking-tight text-navy">
           Become a tutor
@@ -113,54 +92,6 @@ export default function TutorApplyPage({ application }) {
           Tell us what you can teach. Every application is reviewed before you
           can upload videos.
         </p>
-        {/* PENDING */}
-        {/* <div className="mb-6 rounded-lg border border-gold/40 bg-gold/10 px-4 py-3.5">
-          <div className="flex items-start gap-3">
-            <Clock3 className="mt-0.5 h-5 w-5 shrink-0 text-navy" />
-            <div>
-              <p className="text-sm font-semibold text-navy">
-                Application under review
-              </p>
-              <p className="mt-0.5 text-sm text-gray-600">
-                We'll notify you as soon as an admin makes a decision. This
-                usually takes a couple of days.
-              </p>
-            </div>
-          </div>
-        </div> */}
-        {/* APPROVED AS TUTOR */}
-        {/* <div className="mb-6 flex items-start gap-3 rounded-lg border border-success/30 bg-success/10 px-4 py-3.5 sm:items-center">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success sm:mt-0" />
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-success">
-              You're approved as a tutor
-            </p>
-            <p className="mt-0.5 text-sm text-gray-600">
-              You can start uploading videos right away.
-            </p>
-          </div>
-        </div> */}
-
-        {/* Pending / approved / rejected: show a read-only recap of what was submitted */}
-
-        {/* {status === "approved" && (
-          <button
-            onClick={onGoToUpload}
-            className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-navy text-sm font-semibold text-cream transition-transform hover:scale-[1.01]"
-          >
-            Upload your first video
-            <ArrowRight className="h-4 w-4" />
-          </button>
-        )} */}
-
-        {/* {status === "rejected" && (
-          <button
-            onClick={onReapply}
-            className="flex h-11 w-full items-center justify-center rounded-lg bg-navy text-sm font-semibold text-cream transition-transform hover:scale-[1.01]"
-          >
-            Apply again
-          </button>
-        )} */}
 
         <form
           onSubmit={handleSubmit}
