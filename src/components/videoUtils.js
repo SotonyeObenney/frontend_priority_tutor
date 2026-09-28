@@ -34,6 +34,8 @@ export function formatViews(n) {
 
 /** Pulls the 11-char video ID out of youtu.be, watch?v=, or /embed/ links. */
 export function extractYouTubeId(url = "") {
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/);
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([a-zA-Z0-9_-]{11})/,
+  );
   return match ? match[1] : null;
 }

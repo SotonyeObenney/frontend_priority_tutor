@@ -89,13 +89,22 @@ const router = createBrowserRouter(
       <Route path="auth/register" element={<AuthPage />} />
       <Route path="/" element={<RootLayout />}>
         <Route path="tutors/:tutorUserId" element={<TutorsPage />} />
-        <Route path="tutors/apply" element={<TutorApplyPage />} />
+        <Route
+          path="tutors/apply"
+          element={
+            <ProtectedRoute>
+              <TutorApplyPage />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="tutors/dashboard"
           element={
-            <TutorOnlyRoute>
-              <TutorDashboardPage />
-            </TutorOnlyRoute>
+            <ProtectedRoute>
+              <TutorOnlyRoute>
+                <TutorDashboardPage />
+              </TutorOnlyRoute>
+            </ProtectedRoute>
           }
         />
 
