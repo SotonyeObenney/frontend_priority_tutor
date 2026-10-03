@@ -80,7 +80,6 @@ export default function VideoPage() {
         // If access is already granted OR we ran out of attempts, stop polling
         if (userHasAccess || attempts >= maxAttempts) {
           setVideo(data?.video);
-          console.log("IS is here");
           setLoading(false);
         } else {
           // If access isn't granted yet, wait 1.5s and retry (waiting for Webhook)
@@ -132,11 +131,20 @@ export default function VideoPage() {
       <div className="p-8 text-center text-gray-500">Video not found.</div>
     );
   }
-
+  const REVIEW_PATH = `/videos/review/${video_id}`;
+  function onSubmitReview(props) {
+    try {
+      console.log(props);
+      console.log(REVIEW_PATH);
+      apiFetch(REVIEW_PATH, { method: "POST", body: props });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   return (
     <>
       {video ? (
-        <VideoUnlocked video={video} />
+        <VideoUnlocked video={video} onSubmitReview={onSubmitReview} />
       ) : (
         <VideoLocked video={error?.video} onUnlock={handlePurchase} />
       )}

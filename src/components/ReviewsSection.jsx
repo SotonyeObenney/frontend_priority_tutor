@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { StarRating, StarRatingInput } from "./StarRating";
+import { apiFetch } from "../api";
 
 /**
  * ReviewsSection — shared between the unlocked and locked video pages.

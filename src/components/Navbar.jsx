@@ -54,7 +54,7 @@ export default function Navbar({
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [query, setQuery] = useState("");
   const { user } = useAuth();
-
+  const userProfilePath = "users/profile";
   const navLinks = [
     { label: "Home", path: "/" },
     { label: "Videos", path: "/videos" },
@@ -185,9 +185,14 @@ export default function Navbar({
           {isAuthenticated ? (
             <>
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-xs font-semibold text-cream ring-2 ring-gold/50">
-                  {initials}
-                </span>
+                <button
+                  onClick={() => navigate(userProfilePath)}
+                  className="flex items-center gap-1.5 text-sm font-medium"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-navy text-xs font-semibold text-cream ring-2 ring-gold/50">
+                    {initials}
+                  </span>
+                </button>
                 <span className="text-sm font-medium text-navy">
                   {user?.name}
                 </span>
