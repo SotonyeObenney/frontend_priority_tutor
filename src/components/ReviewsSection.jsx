@@ -21,12 +21,12 @@ export function ReviewsSection({
   reviewCount = reviews.length,
   isOwner = false,
   hasPurchased = false,
+  hasReview,
   onSubmitReview = () => {},
   onGoToPurchase = () => {},
 }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!rating) return;
@@ -66,6 +66,10 @@ export function ReviewsSection({
               Unlock video
             </button>
           </div>
+        ) : hasReview ? (
+          <p className="text-sm text-gray-500">
+            You've reviewed this video &mdash; you can't leave a review on it.
+          </p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="flex items-center gap-3">
@@ -102,6 +106,7 @@ export function ReviewsSection({
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy text-[11px] font-semibold text-cream">
+                    profile icon
                     {r.full_name}
                   </span>
                   <span className="text-sm font-medium text-navy">

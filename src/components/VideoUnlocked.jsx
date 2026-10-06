@@ -56,22 +56,22 @@ function formatViews(n) {
   return new Intl.NumberFormat("en-US").format(n);
 }
 
-const demoReviews = [
-  {
-    id: 1,
-    user: "Bala Ahmed",
-    rating: 5,
-    comment: "Explained the recursion part way better than my lecturer did.",
-    date: "2 days ago",
-  },
-  {
-    id: 2,
-    user: "Chidinma Okafor",
-    rating: 4,
-    comment: "Good pace, wish the audio was a bit louder in the second half.",
-    date: "1 week ago",
-  },
-];
+// const demoReviews = [
+//   {
+//     id: 1,
+//     user: "Bala Ahmed",
+//     rating: 5,
+//     comment: "Explained the recursion part way better than my lecturer did.",
+//     date: "2 days ago",
+//   },
+//   {
+//     id: 2,
+//     user: "Chidinma Okafor",
+//     rating: 4,
+//     comment: "Good pace, wish the audio was a bit louder in the second half.",
+//     date: "1 week ago",
+//   },
+// ];
 
 export default function VideoUnlocked({
   video = {
@@ -83,6 +83,7 @@ export default function VideoUnlocked({
     price: 2000.0,
     title: "Test Video",
     tutor: "Ifeoluwa",
+    has_review: true,
     view_count: 1204,
     reviews: demoReviews,
   },
@@ -157,6 +158,7 @@ export default function VideoUnlocked({
           averageRating={averageRating}
           isOwner={video.is_owner}
           hasPurchased={true}
+          hasReview={video.has_review}
           onSubmitReview={onSubmitReview}
         />
 

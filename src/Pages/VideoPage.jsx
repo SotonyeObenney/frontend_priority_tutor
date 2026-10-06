@@ -18,6 +18,7 @@ export default function VideoPage() {
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refPage, setRefPage] = useState(true);
 
   const [searchParams] = useSearchParams();
 
@@ -29,7 +30,6 @@ export default function VideoPage() {
 
   const handlePurchase = async () => {
     const data = await apiFetch(`videos/buy/${video_id}`);
-    console.log(data);
     if (data?.auth_url) {
       // 2. Redirect to the external payment gateway URL securely
       window.location.href = data.auth_url;
@@ -44,24 +44,25 @@ export default function VideoPage() {
     window.location.href = `/videos/show_video/${video_id}`;
   };
 
-  // useEffect(() => {
-  //   async function loadVideoData() {
-  //     try {
-  //       const data = await apiFetch(`videos/show_video/${video_id}`, {
-  //         method: "GET",
-  //       });
-  //       setVideo(data?.video);
-  //     } catch (err) {
-  //       setError(err.data);
-  //       console.error(err.data.video);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  //   if (video_id) {
-  //     loadVideoData();
-  //   }
-  // }, [video_id]);
+  //use Effect to refresh the page
+  useEffect(() => {
+    async function loadVideoData() {
+      try {
+        const data = await apiFetch(`videos/show_video/${video_id}`, {
+          method: "GET",
+        });
+        setVideo(data?.video);
+      } catch (err) {
+        setError(err.data);
+        console.error(err.data.video);
+      } finally {
+        setLoading(false);
+      }
+    }
+    if (video_id) {
+      loadVideoData();
+    }
+  }, [refPage]);
 
   useEffect(() => {
     let isMounted = true;
@@ -89,7 +90,6 @@ export default function VideoPage() {
       } catch (error) {
         if (isMounted) {
           setError(error.data);
-          console.log(error.data);
           setLoading(false);
         }
       }
@@ -114,8 +114,6 @@ export default function VideoPage() {
 
   // 2. Error State Screen
   if (error) {
-    console.log(error);
-    console.log(error.video);
     if (error?.video.access === false) {
       return <VideoLocked video={error?.video} onUnlock={handlePurchase} />;
     } else
@@ -134,12 +132,9 @@ export default function VideoPage() {
   const REVIEW_PATH = `/videos/review/${video_id}`;
   function onSubmitReview(props) {
     try {
-      console.log(props);
-      console.log(REVIEW_PATH);
       apiFetch(REVIEW_PATH, { method: "POST", body: props });
-    } catch (error) {
-      console.log(error);
-    }
+      setRefPage((prev) => !prev);
+    } catch (error) {}
   }
   return (
     <>
