@@ -27,6 +27,7 @@ export function ReviewsSection({
 }) {
   const [rating, setRating] = useState(0);
   const [comment, setComment] = useState("");
+  const avatarUrl = `https://localhost:5000/users/get_avatar`;
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!rating) return;
@@ -106,7 +107,7 @@ export function ReviewsSection({
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2">
                   <span className="flex h-7 w-7 items-center justify-center rounded-full bg-navy text-[11px] font-semibold text-cream">
-                    profile icon
+                    <img src={`${avatarUrl}/${r.avatar_filename}`} />
                     {r.full_name}
                   </span>
                   <span className="text-sm font-medium text-navy">

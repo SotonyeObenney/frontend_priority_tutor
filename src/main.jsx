@@ -28,6 +28,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Navbar from "./components/Navbar.jsx";
 import TutorOnlyRoute from "./components/TutorOnlyRoute.jsx";
 import AboutPage from "./Pages/AboutPage.jsx";
+import AvatarManagerPage from "./Pages/AvatarManagerPage.jsx";
 
 function RootLayout() {
   // const navigate = useNavigate();
@@ -122,6 +123,15 @@ const router = createBrowserRouter(
           element={
             <ProtectedRoute>
               <VideoPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/users/upload_avatar"
+          element={
+            <ProtectedRoute>
+              <AvatarManagerPage />
             </ProtectedRoute>
           }
         />

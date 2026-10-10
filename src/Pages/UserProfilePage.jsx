@@ -4,6 +4,9 @@
 import { useEffect } from "react";
 import { apiFetch } from "../api";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { avatarUrl } from "../components/tools";
+import { useNavigate } from "react-router-dom";
 
 const cap = (s = "") => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -58,6 +61,7 @@ function Pill({ children }) {
     </span>
   );
 }
+
 const PATH = "users/profile";
 export default function UserProfilePage() {
   const [profile, setProfile] = useState({});
@@ -69,6 +73,12 @@ export default function UserProfilePage() {
     level,
     reviews = [],
   } = profile;
+  const previewUrl = useState(null);
+  const { user, setUser } = useAuth();
+  const navigate = useNavigate();
+  function handleManageAvatar() {
+    navigate("/users/upload_avatar");
+  }
   const count = reviews.length;
   const average = count
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / count
@@ -96,8 +106,19 @@ export default function UserProfilePage() {
         {/* Profile header */}
         <section className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-8">
           <div className="flex flex-col items-start gap-5 sm:flex-row sm:items-center">
-            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-navy text-2xl font-semibold text-cream ring-4 ring-gold/50">
-              {initials(name)}
+            <div className="flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-navy ring-2 ring-gold/50">
+              {/* <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-navy text-2xl font-semibold text-cream ring-4 ring-gold/50"> */}
+              {user?.avatar_filename ? (
+                <img
+                  src={`${avatarUrl}/${user.avatar_filename}`}
+                  alt={user.full_name || "User Avatar"}
+                  className="h-full w-full object-cover"
+                />
+              ) : (
+                <span className="text-2xl font-bold text-cream">
+                  {initials(name)}
+                </span>
+              )}
             </div>
             <div className="min-w-0">
               <h1 className="text-2xl font-bold tracking-tight text-navy">
@@ -106,11 +127,13 @@ export default function UserProfilePage() {
               <p className="mt-1 text-gray-500">{university}</p>
             </div>
           </div>
-
           <div className="mt-6 flex flex-wrap gap-2">
             <Pill>{cap(faculty)} faculty</Pill>
             <Pill>{cap(department)} department</Pill>
             <Pill>{level} level</Pill>
+            <span className="rounded-full bg-gold px-3 py-1.5 text-sm font-medium text-navy">
+              <button onClick={handleManageAvatar}>Manage Avatar</button>
+            </span>
           </div>
         </section>
 
