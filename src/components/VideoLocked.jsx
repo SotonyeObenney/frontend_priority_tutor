@@ -1,5 +1,6 @@
 import { Lock, User, Eye, ArrowLeft } from "lucide-react";
 import { ReviewsSection } from "./ReviewsSection";
+import { useNavigate } from "react-router-dom"; // add at the top of the file
 
 /**
  * VideoLocked — same page, pre-purchase state
@@ -96,6 +97,10 @@ export default function VideoLocked({
     reviews.length > 0
       ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
       : 0;
+  const navigate = useNavigate();
+  function goToTutor() {
+    navigate(`/tutors/${video.tutor_user_id}`);
+  }
 
   return (
     <div className="min-h-screen bg-cream px-4 py-8 sm:px-6 lg:px-8">
@@ -152,10 +157,14 @@ export default function VideoLocked({
             </h1>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium text-gray-500">
-              <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={goToTutor}
+                className="flex items-center gap-2 rounded-lg text-navy hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-navy"
+              >
                 <User className="h-4 w-4" />
                 <span>Tutor: {video.tutor}</span>
-              </div>
+              </button>
               {typeof video.view_count === "number" && (
                 <div className="flex items-center gap-1.5">
                   <Eye className="h-4 w-4" />
